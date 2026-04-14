@@ -14,7 +14,7 @@ export default function NodeStatus({ health, lastUpdate }) {
       <div className="stat-grid">
         <div className="stat">
           <span className="stat-label">NODE ID</span>
-          <span className="stat-value accent">{health.nodeId}</span>
+          <span className="stat-value accent">{health.node_id}</span>
         </div>
         <div className="stat">
           <span className="stat-label">PUERTO</span>
