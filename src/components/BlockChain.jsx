@@ -2,14 +2,12 @@ import { useState } from 'react'
 
 function Block({ block, index }) {
   const [expanded, setExpanded] = useState(false)
-  const isGenesis = block.index === 0
 
   return (
-    <div className={`block ${isGenesis ? 'block-genesis' : ''}`}
-         onClick={() => setExpanded(e => !e)}>
+    <div className={`block`} onClick={() => setExpanded(e => !e)}>
       <div className="block-header">
-        <div className="block-index">#{block.index}</div>
-        <div className="block-hash">{block.hashActual}</div>
+        <div className="block-index">#{block.bloque_index ?? index}</div>
+        <div className="block-hash">{block.hash_actual}</div>
         <div className="block-toggle">{expanded ? '▲' : '▼'}</div>
       </div>
 
@@ -17,7 +15,7 @@ function Block({ block, index }) {
         <div className="block-body">
           <div className="block-field">
             <span className="bf-label">hash anterior</span>
-            <span className="bf-value">{block.hashAnterior}</span>
+            <span className="bf-value">{block.hash_anterior}</span>
           </div>
           <div className="block-field">
             <span className="bf-label">nonce</span>
@@ -26,35 +24,22 @@ function Block({ block, index }) {
           <div className="block-field">
             <span className="bf-label">timestamp</span>
             <span className="bf-value">
-              {new Date(block.timestamp).toLocaleString()}
+              {block.creado_en
+                ? new Date(block.creado_en).toLocaleString()
+                : '—'}
             </span>
           </div>
-          {isGenesis ? (
-            <div className="block-field">
-              <span className="bf-label">datos</span>
-              <span className="bf-value">{block.data?.mensaje}</span>
+          <div className="block-field">
+            <span className="bf-label">minado por</span>
+            <span className="bf-value accent">{block.nodo_origen || block.firmado_por || '—'}</span>
+          </div>
+          {block.titulo_obtenido && (
+            <div className="tx-item">
+              <div className="tx-titulo">{block.titulo_obtenido}</div>
+              <div className="tx-meta">
+                {block.firmado_por} · {block.fecha_fin}
+              </div>
             </div>
-          ) : (
-            <>
-              <div className="block-field">
-                <span className="bf-label">minado por</span>
-                <span className="bf-value accent">{block.data?.minadoPor}</span>
-              </div>
-              <div className="block-field">
-                <span className="bf-label">transacciones</span>
-                <span className="bf-value">
-                  {block.data?.transacciones?.length || 0}
-                </span>
-              </div>
-              {block.data?.transacciones?.map(tx => (
-                <div key={tx.id} className="tx-item">
-                  <div className="tx-titulo">{tx.tituloObtenido}</div>
-                  <div className="tx-meta">
-                    {tx.firmadoPor} · {tx.fechaFin}
-                  </div>
-                </div>
-              ))}
-            </>
           )}
         </div>
       )}
@@ -71,7 +56,7 @@ export default function BlockChain({ chain }) {
       </div>
       <div className="chain-list">
         {[...chain].reverse().map((block, i) => (
-          <Block key={block.hashActual} block={block} index={i} />
+          <Block key={block.hash_actual} block={block} index={chain.length - 1 - i} />
         ))}
       </div>
     </div>
